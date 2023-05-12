@@ -86,6 +86,11 @@ export interface MetricsProviderProps {
    * ```
    */
   customMetrics?: MetricDefinition[];
+
+  /**
+   * If you load multiple MetricsProvider on one page, you may want to disable this completely.
+   */
+  disableNavigationListener?: number[];
 }
 
 const defaultBuckets = [0.01, 0.1, 1, 2, 3, 4, 5, 7, 10, 15];
@@ -100,6 +105,7 @@ const MetricsProvider = ({
   histogramBuckets = defaultBuckets,
   customMetrics = defaultCustomMetrics,
   fetchOptions,
+  disableNavigationListener = false,
 }: PropsWithChildren<MetricsProviderProps>) => {
   const [isReady, setIsReady] = useState(false);
   const [navigationData, setNavigationData] = useState<NavigationData | null>(
@@ -198,6 +204,10 @@ const MetricsProvider = ({
   });
 
   useNavigationListener((navigation) => {
+    if(disableNavigationListener) {
+      return;
+    }
+
     const {
       start,
       duration,
